@@ -4,8 +4,8 @@ function func() {
   console.log("Hello World");
 }
 
-function take_another_function(another_func) {
-  console.log(another_func());
+function takeAnotherFunction(anotherFunc) {
+  console.log(anotherFunc());
 }
 
-take_another_function(func);
+takeAnotherFunction(func);
