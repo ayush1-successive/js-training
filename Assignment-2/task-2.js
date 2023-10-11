@@ -7,14 +7,22 @@ const rl = readline.createInterface({
   output: process.stdout,
 });
 
-rl.question("Enter name: ", (name) => {
-  rl.question("Enter age: ", (age) => {
-    rl.question("Enter phone number: ", (phoneNo) => {
-      console.log("User name =", name);
-      console.log("User age =", age);
-      console.log("User phone number =", phoneNo);
-
-      rl.close();
-    });
+const getResponse = (question) => {
+  return new Promise((resolve) => {
+    rl.question(question, resolve);
   });
-});
+};
+
+const getUserData = async () => {
+  const name = await getResponse("Enter name: ");
+  const age = await getResponse("Enter age: ");
+  const phoneNo = await getResponse("Enter phone no: ");
+
+  rl.close();
+
+  console.log("User name =", name);
+  console.log("User age =", age);
+  console.log("User phone number =", phoneNo);
+};
+
+getUserData();
