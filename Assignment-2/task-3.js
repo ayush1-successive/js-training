@@ -1,11 +1,12 @@
 //  Write a function expression that takes in another function as an argument
 
-function func() {
-  console.log("Hello World");
+// Uses the concept of first-class citizenship
+function funcGreetings() {
+  return "Hello World";
 }
 
 function takeAnotherFunction(anotherFunc) {
   console.log(anotherFunc());
 }
 
-takeAnotherFunction(func);
+takeAnotherFunction(funcGreetings);
