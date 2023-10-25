@@ -27,9 +27,22 @@ persons = [
   },
 ];
 
+// Sort the array using bubbleSort algorithm
+const bubbleSort = (personsArray) => {
+  for (let i = 0; i < personsArray.length; i++) {
+    for (let j = i + 1; j < personsArray.length; j++) {
+      if (personsArray[j].age < personsArray[i].age)
+        [personsArray[i], personsArray[j]] = [personsArray[j], personsArray[i]];
+    }
+  }
+};
+
 // Sort all persons accordingly by their age
-persons.sort((a, b) => {
-  return a.age - b.age;
-});
+bubbleSort(persons);
+
+// Using JavaScript in-built sorting method
+// persons.sort((a, b) => {
+//   return a.age - b.age;
+// });
 
 console.log(persons);
