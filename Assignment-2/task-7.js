@@ -2,11 +2,11 @@
 
 // Task-3
 
-const func = () => console.log("Hello World!");
+const funcGreetings = () => "Hello World!";
 
 const takeAnotherFunc = (anotherFunc) => console.log(anotherFunc());
 
-console.log(takeAnotherFunc(func));
+takeAnotherFunc(funcGreetings);
 
 // Task-4
 
