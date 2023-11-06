@@ -2,7 +2,6 @@
 
 // OpenApi for random jokes
 const apiUrl = "https://v2.jokeapi.dev/joke/Programming?type=single";
-// const apiUrl = "https://catfact.ninja/fact";
 
 // Call to ApiUrl with callback function
 const callToApi = (callback, apiUrl) => {
@@ -14,7 +13,7 @@ const callToApi = (callback, apiUrl) => {
     });
 };
 
-// Extract the joke content from full json data
+// Extract the content from full json data
 const extractJoke = (data) => console.log(`Random Joke:\n${data["joke"]}`);
 
 callToApi(extractJoke, apiUrl);
