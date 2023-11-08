@@ -1,60 +1,53 @@
 // Write a program to implement a Promise-based task queue, that processes tasks in a specified order, with a specified concurrency limit
 
 // Provides a delay in ms.
-const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+const delay = async (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 class rateLimiter {
-  constructor(tasks, maxRequests) {
+  constructor(maxRequests) {
     this.maxRequests = maxRequests;
-    this.tasks = tasks;
+    this.iters = 1;
+    this.concurrentTasks = [];
   }
 
-  // Run all promises
-  async runPromises() {
-    const tasksWithId = this.assignPriority(this.tasks);
-    console.log("Tasks:\n", tasksWithId);
+  tasksLeftInQueue() {
+    return this.concurrentTasks.length > 0;
+  }
 
-    // Sort all processes by their id.
-    // Lower id process takes higher priority
-    tasksWithId.sort((a, b) => a["id"] - b["id"]);
-
-    const promises = tasksWithId
-      .slice(0, this.maxRequests)
-      .map((elem) => elem["task"]);
-
-    Promise.all(promises).then((values) => {
-      console.log("Result:", values);
+  async runTasks() {
+    await Promise.all(this.concurrentTasks).then((values) => {
+      console.log(`Result (iter-${this.iters++})`, values);
+      this.concurrentTasks = [];
     });
-    this.tasks = tasksWithId
-      .slice(this.maxRequests)
-      .map((elem) => elem["task"]);
+
+    await delay(2000);
   }
 
-  taskLeft() {
-    return this.tasks.length > 0;
-  }
+  async addTask(currentPromise) {
+    this.concurrentTasks.push(currentPromise);
 
-  // Assigns a priority to each process in every iteration
-  assignPriority = () => {
-    return this.tasks.map((elem) => {
-      return { task: elem, id: Math.floor(Math.random() * 20) };
-    });
-  };
+    // Concurrency limit hit, run all tasks
+    if (this.concurrentTasks.length >= this.maxRequests) {
+      await this.runTasks();
+    }
+  }
 }
 
-// Run all processes according to their id
-// assigned and provided concurrency limit
-const rateLimitedQuery = async (tasks, rate) => {
-  const limiter = new rateLimiter(tasks, rate);
+// Run all processes according to provided concurrency limit
+const rateLimitedQuery = async (promisesList, rate) => {
+  const limiter = new rateLimiter(rate);
 
-  while (limiter.taskLeft()) {
-    limiter.runPromises(tasks);
-    await delay(1000);
+  for (const promise of promisesList) {
+    await limiter.addTask(promise);
+  }
+
+  if (limiter.tasksLeftInQueue()) {
+    await limiter.runTasks();
   }
 };
 
 // List of promises
-const tasks = [
+const promises = [
   Promise.resolve("Successful resolve promise 1"),
   Promise.resolve("Successful resolve promise 2"),
   Promise.resolve("Successful resolve promise 3"),
@@ -64,4 +57,4 @@ const tasks = [
   Promise.resolve("Successful resolve promise 7"),
 ];
 
-rateLimitedQuery(tasks, 3);
+rateLimitedQuery(promises, 3);
